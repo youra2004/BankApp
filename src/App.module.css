@@ -1,0 +1,87 @@
+.banks {
+  margin-top: 50px;
+  text-align: center;
+}
+.bank {
+  border-radius: 12px;
+  background-color: rgb(71, 5, 67);
+  color: white;
+  width: 25%;
+  height: 350px;
+  display: inline-block;
+  margin: 30px;
+}
+.banks input {
+  margin-top: 10px;
+}
+.bank button {
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+  border: 1px solid grey;
+}
+.text {
+  text-align: left;
+  margin-left: 10%;
+}
+.button button {
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+  border: 1px solid grey;
+}
+.button button:hover {
+  background-color: rgb(71, 5, 67);
+  color: white;
+  border: 0;
+}
+.input {
+  width: 30%;
+  border: 1px solid rgb(195, 194, 194);
+  margin-left: 35%;
+  padding-bottom: 30px;
+  margin-top: 40px;
+  border-radius: 12px;
+  background-color: rgb(195, 194, 194);
+}
+.input input {
+  margin-left: 18%;
+  margin-top: 30px;
+  height: 20px;
+  width: 300px;
+  display: block;
+  border: 0;
+  border-radius: 8px;
+}
+.input button {
+  margin-top: 20px;
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+  border: 1px solid grey;
+}
+.input button:hover {
+  background-color: rgb(71, 5, 67);
+  color: white;
+  border: 0;
+}
+.banks input {
+  border: 0;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  height: 40px;
+  width: 250px;
+}
+.banks button {
+  margin-top: 20px;
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+  border: 1px solid grey;
+}
+.banks button:hover {
+  background-color: rgb(71, 5, 67);
+  color: white;
+  border: 0;
+}
