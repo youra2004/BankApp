@@ -10,7 +10,7 @@ function App() {
   const [loanTerm, setLoanTerm] = useState();
   const [banks, setBanks] = useState([]);
   const [bankEdit, setBankEdit] = useState([]);
-  const [render, setRender] = useState(false);
+  const [render, setRender] = useState(0);
   const [inputIsCorrect, setInputIsCorrect] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -43,6 +43,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         for (let i of Object.keys(data)) {
+          data[i].bank.url = i;
           banksList.push(data[i].bank);
         }
         setBanks(banksList);
@@ -62,6 +63,7 @@ function App() {
     bank.minimumPayment = minimumPaymentRef.current.value;
     bank.loanTerm = loanTermRef.current.value;
 
+    console.log(bank);
     const editBank = [
       {
         id: bank.id,
@@ -70,8 +72,21 @@ function App() {
         maximumLoan: maximumLoanRef.current.value,
         minimumPayment: minimumPaymentRef.current.value,
         loanTerm: loanTermRef.current.value,
+        url: bank.url,
       },
     ];
+
+    console.log();
+    fetch(
+      `https://banks-app-2-default-rtdb.firebaseio.com/banks/${bank.url}.json`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-type": "aplication/json",
+        },
+        body: JSON.stringify({ bank: editBank[0] }),
+      }
+    );
 
     setBankEdit(editBank);
   };
@@ -85,20 +100,22 @@ function App() {
     loanTerm: loanTerm,
   };
 
+  console.log(banks);
   const submithandler = () => {
     if (bankName && interest && maximumLoan && minimumPayment && loanTerm) {
       fetch("https://banks-app-2-default-rtdb.firebaseio.com/banks.json", {
         method: "POST",
         body: JSON.stringify({ bank }),
       });
-      setRender(render);
+
+      const banksUpdate = [...banks, bank];
+      setBanks(banksUpdate);
     } else {
       alert("Not correct input");
     }
   };
 
   const mortgageHandler = (bank) => {
-    console.log(inputValue.current.value);
     if (+bank.maximumLoan >= +inputValue.current.value) {
       setInputIsCorrect(true);
     } else {
@@ -113,9 +130,21 @@ function App() {
       if (ban.id !== bank.id) {
         bankRemove.push(ban);
       }
+      if (ban.id === bank.id) {
+        fetch(
+          `https://banks-app-2-default-rtdb.firebaseio.com/banks/${ban.url}.json`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-type": "aplication/json",
+            },
+          }
+        );
+      }
     });
     setBanks(bankRemove);
   };
+
   const calculatemortgage = (bank) => {
     const mortgage = inputValue.current.value;
     const monthyPaymnet =
