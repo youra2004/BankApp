@@ -18,6 +18,7 @@ function App() {
   const maximumLoanRef = useRef();
   const minimumPaymentRef = useRef();
   const loanTermRef = useRef();
+  const paymentRef = useRef();
 
   const inputValue = useRef();
 
@@ -146,20 +147,42 @@ function App() {
   };
 
   const calculatemortgage = (bank) => {
-    const mortgage = inputValue.current.value;
-    const monthyPaymnet =
-      (mortgage *
-        (bank.interest / 1200) *
-        Math.pow(1 + bank.interest / 1200, bank.loanTerm)) /
-      (Math.pow(1 + bank.interest / 1200, bank.loanTerm) - 1);
-
-    return (
-      <div>
-        <h3>your mortgage: {mortgage}</h3>
-        <h3>monthy payment: {monthyPaymnet.toFixed(2)}</h3>
-        <h3>Down payment: {(bank.minimumPayment * mortgage) / 100}</h3>
-      </div>
-    );
+    let mortgage = inputValue.current.value;
+    let monthyPaymnet;
+    const checkIsCorrect =
+      monthyPaymnet &&
+      (+mortgage * +bank.minimumPayment) / 100 < +paymentRef.current.value;
+    if (paymentRef.current.value) {
+      if (
+        (+mortgage * +bank.minimumPayment) / 100 <
+        +paymentRef.current.value
+      ) {
+        console.log(bank.minimumPayment);
+        let mortgagePayment =
+          +inputValue.current.value - +paymentRef.current.value;
+        monthyPaymnet =
+          (mortgagePayment *
+            (bank.interest / 1200) *
+            Math.pow(1 + bank.interest / 1200, bank.loanTerm)) /
+          (Math.pow(1 + bank.interest / 1200, bank.loanTerm) - 1);
+      }
+    }
+    if (
+      (+mortgage * +bank.minimumPayment) / 100 < +paymentRef.current.value &&
+      +paymentRef.current.value < +mortgage
+    ) {
+      return (
+        monthyPaymnet && (
+          <div>
+            <h3>your mortgage: {mortgage}</h3>
+            <h3>monthy payment: {monthyPaymnet.toFixed(2)}</h3>
+            <h3>Down payment: {paymentRef.current.value}</h3>
+          </div>
+        )
+      );
+    } else {
+      return <div></div>;
+    }
   };
 
   console.log(bankEdit);
@@ -241,19 +264,30 @@ function App() {
             </Link>
           </div>
           <div className={classes.input}>
-            <input placeholder="bank name" onChange={bankNameHandler} />
-            <input placeholder="Interest rate (%)" onChange={interestHandler} />
+            <input
+              placeholder="bank name"
+              onChange={bankNameHandler}
+              type="string"
+            />
+            <input
+              placeholder="Interest rate (%)"
+              onChange={interestHandler}
+              type="number"
+            />
             <input
               placeholder="Maximum loan ($)"
               onChange={maximumLoanHandler}
+              type="number"
             />
             <input
               placeholder="Minimum payment (%)"
               onChange={minimumPaymentHandler}
+              type="number"
             />
             <input
               placeholder="Loan term (months)"
               onChange={loanTermHandler}
+              type="number"
             />
             {bankName &&
             interest &&
@@ -292,6 +326,16 @@ function App() {
                 type="number"
                 placeholder="Entred your mortage"
               />
+              <input
+                onChange={() => {
+                  mortgageHandler(bank);
+                }}
+                style={{ marginLeft: 40 }}
+                ref={paymentRef}
+                type="number"
+                placeholder="Entred your payment"
+              ></input>
+              <p>Down payment must be bigger than 20 percent of mortgage</p>
               {inputIsCorrect && calculatemortgage(bank)}
               <Link to="/">
                 <button>Back</button>
